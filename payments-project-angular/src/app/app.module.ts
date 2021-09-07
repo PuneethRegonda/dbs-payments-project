@@ -3,45 +3,56 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TransferComponent } from './transfer/transfer.component';
+import { HeaderComponent } from './header/header.component';
+import { NavitemsComponent } from './navitems/navitems.component';
+import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+import { SessionService } from './services/sessionService';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    DashboardComponent,
     TransferComponent,
+    HeaderComponent,
+    NavitemsComponent,
+    TransactionHistoryComponent,
+    PagenotfoundComponent,
+
   ],
-  imports: [   
+  imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
     RouterModule.forRoot([
-    {
-      path:'login', component:LoginComponent
-    },
-    {
-      path:"dashboard",component:DashboardComponent
-    },
-    {
-      path:"transfer",component:TransferComponent
-    },
-    {
-      path:"logout",component:LoginComponent
-    },
-
-    {
-      path:"",component:LoginComponent
-    },
+      {
+        path: 'login', component: LoginComponent
+      },
     
-  
-  ])
+      {
+        path: "transfer", component: TransferComponent
+      },
+      {
+        path: "logout", redirectTo:"login"
+      },
+      {
+        path: "transactions", component: TransactionHistoryComponent
+      },
+      {
+        path: "", component: LoginComponent
+      },
+      {
+        path: "**", redirectTo:"page-not-found"
+      },
+      {path:"page-not-found",component:PagenotfoundComponent}
+
+    ])
   ],
-  providers: [],
+  providers: [SessionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

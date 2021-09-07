@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { SessionService } from '../services/sessionService';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +13,7 @@ export class LoginComponent implements OnInit {
 
   
 
-  constructor() {
+  constructor(private router: Router,private sessionService: SessionService) {
     this.loginForm = new FormGroup({
       username: new FormControl('', [
   
@@ -35,6 +37,8 @@ export class LoginComponent implements OnInit {
 
   handleLogin() {
     console.log("Login init", this.username,this.password);
+    this.router.navigate(['transfer']);
+    this.sessionService.loginUser(this.username.value,this.password.value);
   }
   get username() {
     return this.loginForm.controls['username'];
