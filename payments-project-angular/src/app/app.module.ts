@@ -45,6 +45,7 @@ import { SessionService } from './services/sessionService';
       {
         path: "", component: LoginComponent
       },
+
       {
         path: "**", redirectTo:"page-not-found"
       },
