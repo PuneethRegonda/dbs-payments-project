@@ -15,7 +15,7 @@ export class AppComponent {
     router.events.forEach((event) => {
       if (event instanceof NavigationStart) {
         console.log(event.url);
-        if (event.url == '/logout') {
+         if (event.url == '/logout') {
           this.sessionService.logout();
         }
       }

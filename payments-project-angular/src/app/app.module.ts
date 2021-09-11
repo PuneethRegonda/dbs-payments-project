@@ -11,6 +11,10 @@ import { NavitemsComponent } from './navitems/navitems.component';
 import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { SessionService } from './services/sessionService';
+import { MessagesServices } from './services/messagecodes.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { DataService } from './services/dataservice';
+import { TransferService } from './services/transfer.service';
 
 @NgModule({
   declarations: [
@@ -24,6 +28,7 @@ import { SessionService } from './services/sessionService';
 
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
@@ -37,7 +42,7 @@ import { SessionService } from './services/sessionService';
         path: "transfer", component: TransferComponent
       },
       {
-        path: "logout", redirectTo:"login"
+        path: "logout", redirectTo:""
       },
       {
         path: "transactions", component: TransactionHistoryComponent
@@ -53,7 +58,7 @@ import { SessionService } from './services/sessionService';
 
     ])
   ],
-  providers: [SessionService],
+  providers: [SessionService,MessagesServices,DataService,TransferService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

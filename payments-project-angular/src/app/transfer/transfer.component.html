@@ -5,10 +5,10 @@
             <label class="form-label mt-4">Sender Account Number</label>
             <div class="form-group ">
                 <div class="input-group mb-3 ">
-                    <input type="text" class="form-control" placeholder="Sender Account Number"
+                    <input type="number" class="form-control" placeholder="Sender Account Number"
                         aria-label="Sender Account Number" aria-describedby="button-addon2"
                         formControlName="senderAccNumber" (keyup)="onSenderAccChange($event)">
-                    <button class="btn btn-primary" type="button" id="button-addon2" (click)="verifySenderAccount()"
+                    <button class="btn btn-primary" type="button" id="button-addon2" (click)="verifyLoadSenderAcc()"
                         [disabled]="senderAccVerified">Verify</button>
                 </div>
                 <div *ngIf=" !getChildForm('senderForm','senderAccNumber')?.valid && getChildForm('senderForm','senderAccNumber')?.dirty"
@@ -19,20 +19,24 @@
                 <small *ngIf="senderAccVerified" class="text-success">Verified</small>
             </div>
         </div>
-
+        
         <hr class="mt-5">
         <div class="form-group">
             <fieldset>
                 <label class="form-label mt-4" for="readOnlyInput">Account Holder Name</label>
-                <input class="form-control" id="readOnlyInput" type="text" placeholder="Readonly input here..."
-                    readonly="">
+                <input class="form-control" id="readOnlyInput" type="text" placeholder=""
+                    readonly=""
+                    value="{{getSenderAccount?.accountholdername}}"
+                    >
             </fieldset>
         </div>
         <div class="form-group">
             <fieldset>
                 <label class="form-label mt-4" for="readOnlyInput">Clear Balance</label>
-                <input class="form-control" id="readOnlyInput" type="text" placeholder="Readonly input here..."
-                    readonly="">
+                <input class="form-control" id="readOnlyInput" type="text" placeholder=""
+                    readonly=""
+                    value="{{getSenderAccount?.clearbalance |currency:'INR'}}"
+                    >
             </fieldset>
         </div>
     </div>
@@ -47,7 +51,7 @@
                         aria-label="Sender Account Number" aria-describedby="button-addon2"
                         formControlName="recieverBIC" (keyup)="onRecieverBICChange($event)">
 
-                    <button class="btn btn-primary" type="button" id="button-addon2" (click)="verifyRecieverBIC()"
+                    <button class="btn btn-primary" type="button" id="button-addon2" (click)="verifyLoadRecipientBIC()"
                         [disabled]="recieverBICverified">Verify</button>
                 </div>
                 <div *ngIf=" !getChildForm('recieverForm','recieverBIC')?.valid && getChildForm('recieverForm','recieverBIC')?.dirty"
@@ -61,15 +65,16 @@
         <div class="form-group">
             <fieldset>
                 <label class="form-label mt-4" for="readOnlyInput">Reciepient Institution Name</label>
-                <input class="form-control" id="readOnlyInput" type="text" placeholder="Readonly input here..."
-                    readonly="">
+                <input class="form-control" id="readOnlyInput" type="text" placeholder=""
+                    readonly=""
+                    value= "{{getrecieverBIC?.bankname}}">
             </fieldset>
         </div>
 
         <div class="form-group">
             <label class="col-form-label mt-4" for="inputDefault">Account Holder Name</label>
             <input type="text" class="form-control" placeholder="Enter Reciepient Account Holder Name" id="inputDefault"
-                formControlName="recieverName">
+                formControlName="recieverName" autocomplete="off">
             <div 
             *ngIf=" !getChildForm('recieverForm','recieverName')?.valid && getChildForm('recieverForm','recieverName')?.dirty" class="text-danger mt-2">
                 <div *ngIf="getChildForm('recieverForm','recieverName')?.errors?.required">Reciever Account Name is required</div>
@@ -78,8 +83,8 @@
 
         <div class="form-group">
             <label class="col-form-label mt-4" for="inputDefault">Account Number</label>
-            <input type="text" class="form-control" placeholder="Enter Reciepient Account Number" id="inputDefault"
-                formControlName="recieverAccountNumber">
+            <input type="number" class="form-control" placeholder="Enter Reciepient Account Number" id="inputDefault"
+                formControlName="recieverAccountNumber" autocomplete="off">
         </div>
         <div 
             *ngIf=" !getChildForm('recieverForm','recieverAccountNumber')?.valid && getChildForm('recieverForm','recieverAccountNumber')?.dirty" class="text-danger mt-2">
@@ -93,8 +98,11 @@
             <label for="exampleSelect1" class="form-label mt-4">Transfer Types</label>
             <select class="form-select" id="exampleSelect1" formControlName="transferType">
                 <option value ="">Select Transfer Type</option>
-                <option>1</option>
-                <option>2</option>
+                <option 
+                *ngFor="let c of gettransferTypes" 
+                [value]="c.code">{{c.description}}
+                </option>
+
             </select>
         </div>
         <div 
@@ -106,8 +114,10 @@
             <label for="exampleSelect1" class="form-label mt-4">Message</label>
             <select class="form-select" id="exampleSelect1" formControlName="message">
                 <option value="">Select Message</option>
-                <option>1</option>
-                <option>2</option>
+                <option 
+                *ngFor="let c of getMessageCodes" 
+                [value]="c.messagecode">{{c.instruction}}
+                </option>
             </select>
         </div>
         <div *ngIf=" !getChildForm('transferDetailsForm','message')?.valid && getChildForm('transferDetailsForm','message')?.dirty" class="text-danger mt-2">
@@ -123,26 +133,27 @@
             <div class="form-group">
                 <div class="input-group mb-3">
                     <span class="input-group-text">₹</span>
-                    <input type="text" class="form-control" aria-label="Amount " formControlName="amount">
+                    <input type="number" class="form-control" aria-label="Amount " formControlName="amount">
                 </div>
                 <div *ngIf=" !getChildForm('transferAmountForm','amount')?.valid && getChildForm('transferAmountForm','amount')?.dirty" class="text-danger mt-2">
                     <div *ngIf="getChildForm('transferAmountForm','amount')?.errors?.required">Required</div>
                     <div *ngIf="getChildForm('transferAmountForm','amount')?.errors?.pattern">Unexpected format </div>
-                </div>
-        
+                    <div *ngIf="isMoneyOverflow">Exceeding your clear balance</div>
+            </div>
+                <div class="text-danger mt-2" *ngIf="isMoneyOverflow">Exceeding your clear balance</div>
             </div>
         </div>
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Transaction Fee</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="31.1">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value*0.25}}">
             </div>
         </div>
         <hr>
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Total Amount</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="XXXXX.xx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value+getChildForm('transferAmountForm','amount')?.value*0.25}}">
             </div>
         </div>
 
@@ -154,51 +165,57 @@
         <div class="form-group row">
             <label for="senderAccountHolderName" class="col-md-4 col-form-label">Sender Account Number</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Your Name">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('senderForm','senderAccNumber')?.value}}">
             </div>
         </div>
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Reciepient BIC</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Your Name">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('recieverForm','recieverBIC')?.value}}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Institution Name</label>
+            <div class="col-md-4">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getrecieverBIC?.bankname}}">
             </div>
         </div>
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Account Number</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Xxxxxxxx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('recieverForm','recieverAccountNumber')?.value}}">
             </div>
         </div>
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Account Holder Name</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Xxxxxxxx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('recieverForm','recieverName')?.value}}">
             </div>
         </div>
 
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label"> Transfer Type</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Xxxxxxxx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{gettransferText}}">
             </div>
         </div>
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Message</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Xxxxxxxx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getmessageText}}">
             </div>
         </div>
 
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Transfer Amount</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Xxxxxxxx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value}}">
             </div>
         </div>
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Transaction Fee</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="Xxxxxxxx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value*0.25}}">
             </div>
         </div>
 
@@ -206,8 +223,9 @@
         <div class="form-group row">
             <label for="staticEmail" class="col-md-4 col-form-label">Total Amount</label>
             <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="XXXXX.xx">
+                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value+getChildForm('transferAmountForm','amount')?.value*0.25}}">
             </div>
+            
         </div>
         <hr>
     </div>
