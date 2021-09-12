@@ -5,7 +5,17 @@ public class TransferTransactionData {
 	public String sendCustomerId,senderBIC,recieverBIC,recieverAccountNumber,recieverAccHolderName,transferTypeId,messageCodeId,currencyCode;
 	public Double transferAmount, transactionFee;
 	public Boolean isEmployeeTransfer;
-	public String employeeId;
+	public Integer employeeId;
+	public Integer userid;
+	
+
+	public Integer getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Integer userid) {
+		this.userid = userid;
+	}
 
 	public TransferTransactionData() {
 	}
@@ -98,11 +108,11 @@ public class TransferTransactionData {
 		this.isEmployeeTransfer = isEmployeeTransfer;
 	}
 
-	public String getEmployeeId() {
+	public Integer getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(String employeeId) {
+	public void setEmployeeId(Integer employeeId) {
 		this.employeeId = employeeId;
 	}
 

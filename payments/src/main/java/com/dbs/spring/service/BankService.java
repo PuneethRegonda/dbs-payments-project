@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dbs.spring.beans.Bank;
-import com.dbs.spring.beans.TransferTypes;
+import com.dbs.spring.beans.TransferType;
 import com.dbs.spring.repository.BankRepository;
 import com.dbs.spring.repository.TransferTypeRepository;
 
@@ -34,9 +34,9 @@ public class BankService {
 			return null;
 		}
 	}
-	public TransferTypes findTransferTypesById(String  id) {
+	public TransferType findTransferTypesById(String  id) {
 		try {
-			Optional<TransferTypes> transferType= this.transferTypeRepo.findById(id);
+			Optional<TransferType> transferType= this.transferTypeRepo.findById(id);
 
 			return transferType.orElseThrow(()->{	
 				return new EntityNotFoundException("No transferType with id "+id+ " exist");

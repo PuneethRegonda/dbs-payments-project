@@ -7,12 +7,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name="Customeruser")
 public class CustomerUser {
 	@Id
 	public Integer userid;
 	public String username;
 	@OneToOne
+    @JoinColumn(name = "customerid")
 	public Customer  customer;
 	public String userpassword;
 	

@@ -15,6 +15,7 @@ import { MessagesServices } from './services/messagecodes.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DataService } from './services/dataservice';
 import { TransferService } from './services/transfer.service';
+import { EmployeeLoginComponent } from './employee-login/employee-login.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { TransferService } from './services/transfer.service';
     NavitemsComponent,
     TransactionHistoryComponent,
     PagenotfoundComponent,
+    EmployeeLoginComponent,
 
   ],
   imports: [
@@ -48,13 +50,15 @@ import { TransferService } from './services/transfer.service';
         path: "transactions", component: TransactionHistoryComponent
       },
       {
+        path: "employee-login", component:EmployeeLoginComponent
+      },
+      {
         path: "", component: LoginComponent
       },
 
       {
         path: "**", redirectTo:"page-not-found"
       },
-      {path:"page-not-found",component:PagenotfoundComponent}
 
     ])
   ],

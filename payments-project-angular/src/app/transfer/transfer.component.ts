@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessagesServices } from '../services/messagecodes.service';
+import { SessionService } from '../services/sessionService';
 import { TransferService } from '../services/transfer.service';
 
 @Component({
@@ -39,7 +40,9 @@ export class TransferComponent implements OnInit {
   private isRecieverBICVerified: boolean;
   constructor(
     private transferservice: TransferService,
-    private messageService: MessagesServices) {
+    private messageService: MessagesServices,
+    private sessionService : SessionService
+    ) {
     this.isSenderAccVerified = false;
     this.step = 1;
     this.isRecieverBICVerified = false;
@@ -117,13 +120,13 @@ export class TransferComponent implements OnInit {
       currencyCode:"INR",
       transferAmount:this.getChildForm('transferAmountForm','amount')?.value,
       transactionFee:this.getChildForm('transferAmountForm','amount')?.value*0.25,
-      isEmployeeTransfer:false,
-      employeeId:"",
-      userid:503070
+      isEmployeeTransfer:this.sessionService.getSessionUser?.isEmployee,
+      employeeId: this.sessionService.getSessionUser?.isEmployee ? this.sessionService.getSessionUser.id:null,
+      userid: this.sessionService.getSessionUser?.isEmployee ? null:this.sessionService.getSessionUser.id
      }
      console.log(transactionData);
      this.transferservice.initTransaction(transactionData).subscribe((result:any)=>{
-       console.log(result);
+        console.log(result);
      });
   }
 

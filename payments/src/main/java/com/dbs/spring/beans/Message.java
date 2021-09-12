@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 @Entity
-public class Message {
+public class Message extends Object{
 	@Id
 	public String messagecode;
 	public String instruction;

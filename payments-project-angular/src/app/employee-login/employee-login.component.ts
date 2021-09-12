@@ -4,11 +4,13 @@ import { Router } from '@angular/router';
 import { SessionService } from '../services/sessionService';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-employee-login',
+  templateUrl: './employee-login.component.html',
+  styleUrls: ['./employee-login.component.css']
 })
-export class LoginComponent implements OnInit {
+
+export class EmployeeLoginComponent implements OnInit {
+
 
   loginForm: FormGroup;
 
@@ -37,23 +39,22 @@ export class LoginComponent implements OnInit {
 
   handleLogin() {
     console.log("Login init", this.userid, this.password);
-    this.sessionService.loginUser(
+    this.sessionService.employeeLogin(
       { userid: +this.userid?.value, password: this.password?.value })
       .subscribe((result: any) => {
         console.log(result);
         if(result.status){
           this.sessionService.isLoggedIn = true;
-          SessionService.saveSession(result.data);
-          console.log( this.sessionService.getSessionUser);
+          SessionService.saveSession(result?.data)
+          console.log(this.sessionService.getSessionUser);
           this.router.navigate(['transfer']);
         }
       },err=>{
         console.log(err); 
         alert(err);
-      }
-      
-      );
+      });
   }
+
   get userid() {
     return this.loginForm.controls['userid'];
   }

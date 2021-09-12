@@ -2,9 +2,12 @@ package com.dbs.spring.rest;
 
 import java.time.LocalDate;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +24,7 @@ import com.dbs.spring.constants.Constants;
 import com.dbs.spring.service.BankService;
 import com.dbs.spring.service.CustomerService;
 import com.dbs.spring.service.LoggerService;
+import com.dbs.spring.service.RequestServiceImpl;
 import com.dbs.spring.service.TransactionService;
 
 /**
@@ -46,6 +50,7 @@ import com.dbs.spring.service.TransactionService;
 
 @RestController
 @RequestMapping("/transfer")
+@CrossOrigin()
 public class TransactionRestController {
 
 	@Autowired
@@ -54,7 +59,9 @@ public class TransactionRestController {
 	public TransactionRestController() {
 		// TODO Auto-generated constructor stub
 	}
-
+	@Autowired
+	private RequestServiceImpl requestService;
+	
 	@Autowired
 	private TransactionService transactionService;
 	@Autowired
@@ -66,8 +73,10 @@ public class TransactionRestController {
 		return this.customerService.findCustomerById(id);
 	}
 
-	@PostMapping
-	public ResponseEntity<Object> initTransaction(@RequestBody TransferTransactionData transferData) {
+	@PostMapping("/initTransfer")
+	public ResponseEntity<Object> initTransaction(@RequestBody TransferTransactionData transferData,HttpServletRequest request) {
+		Result result = new Result();
+		
 		boolean isvalidTransactionData = false;
 		try {
 			if (getCustomer(transferData.getSendCustomerId()) != null
@@ -77,13 +86,12 @@ public class TransactionRestController {
 				Bank recieverBank = this.bankService.findBankById(transferData.getRecieverBIC());
 
 				if (isValidTransferType(transferData, recieverBank)) {
+					
 					Customer customer = getCustomer(transferData.getSendCustomerId());
 					double totalDeductionAmount = transferData.getTransferAmount() + getTransferFee(transferData.getTransferAmount());
 					
-					if((!customer.getOverdraftflag() && totalDeductionAmount < customer.getClearbalance()) || customer.getOverdraftflag()) {
-						
-						customer.setClearbalance(customer.getClearbalance() - totalDeductionAmount);
-						
+					if(customer.getOverdraftflag() ||  (!customer.getOverdraftflag() && totalDeductionAmount <= customer.getClearbalance()) ) {
+						customer.setClearbalance(customer.getClearbalance() - totalDeductionAmount);			
 						this.customerService.updateCustomer(customer);
 						
 						Transaction transaction = new 
@@ -104,22 +112,43 @@ public class TransactionRestController {
 						
 						// TODO: create logger object and save it
 						
-						Logger logger = new Logger();
-						
+//						System.out.println(requestService.getClientIp(request));
+								
+
+						Logger logger = new Logger(0, customer.getCustomerid(), transferData.getUserid(), transferData.getEmployeeId(),"/transfer" , "money transfer", requestService.getClientIp(request));
 						this.loggerService.insertLogger(logger);
 						
+						result.setStatus(true);
+						result.setMessage("Transaction Successfull");
+						transaction.transactionid = transactionID;
+						result.data = transaction;
+						return ResponseEntity.status(HttpStatus.OK).body(result);
+						
 					}
+					else {
+						// incorrect transfer type: 
+						result.setStatus(false);
+						result.setMessage("Insufficient Balance");
+						return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result);
+					}
+				}else {
+					// incorrect transfer type: 
+					result.setStatus(false);
+					result.setMessage("Invalid Transfer Type.");
+					return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result);
 				}
 			}
 			
 			if(!isvalidTransactionData) {
-				throw new Exception("");
+				throw new Exception("Is not valid Transaction");
 			}
 			
 		} catch (Exception e) {
-			
+			result.setStatus(false);
+			result.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result);
 		}
-
+		
 		return null;
 	}
 
@@ -127,13 +156,12 @@ public class TransactionRestController {
 		
 		return Constants.TRANSFER_FEE_RATE*transferAmount;
 	}
-
+	// TODO: Check in DB Do Bank has extra attribute call isinternalBank 
 	private boolean isValidTransferType(TransferTransactionData transferData, Bank recieverBank) {
 
 		return (transferData.transferTypeId.equals(Constants.CUSTOMER_TRANSFER_TYPE) && !recieverBank.isInternalBank())
 				|| (transferData.transferTypeId.equals(Constants.BANK_OWN_TRANSFER_TYPE)
 						&& recieverBank.isInternalBank());
 	}
-
-
+	
 }

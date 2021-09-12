@@ -1,0 +1,47 @@
+<form [formGroup]="loginForm" (ngSubmit)="handleLogin()" novalidate>
+    <div class="col-md-4 offset-md-3 mt-5">
+      <h2><strong>Employee Login</strong></h2>
+    </div>
+    <div class="col-md-4 offset-md-3">
+      <div class="form-group">
+        <label for="userid" class="form-label mt-4">Employee Id</label>
+        <input type="text" 
+        class="form-control"
+        id="userid"
+        name="userid" 
+        placeholder="Enter Employee Id"
+        formControlName="userid" 
+        autocomplete="off" />
+      </div>
+      <div *ngIf="!userid?.valid && userid?.dirty " class="text-danger mt-2">
+        <div *ngIf="userid.errors?.maxlength">userid cannot be more than 15 characters</div>
+       <div *ngIf="userid.errors?.minlength">Minimum characters for userid is 6</div>
+       <div *ngIf="userid.errors?.required">userid is required</div>
+       <!-- <div *ngIf="userid.errors?.pattern">userid should be alphanumeric only</div> -->
+     </div>
+
+    </div>
+    
+    <div class="col-md-4 offset-md-3">
+      <div class="form-group">
+        <label for="password" class="form-label mt-4">Password</label>
+        <input type="password" 
+        class="form-control" 
+        id="password" 
+        name="password" 
+        placeholder="Enter Password"
+        formControlName="password" 
+        autocomplete="off" 
+        />  
+      </div>
+
+      <div *ngIf="!password?.valid && password?.dirty " class="text-danger mt-2">
+      <div *ngIf="password.errors?.maxlength">Password cannot be more than 25 characters</div>
+      <div *ngIf="password.errors?.minlength">Password should be miniumum of  6 characters</div>
+      <div *ngIf="password.errors?.required">Password is required</div>
+      </div>
+    </div>
+    <div class="col-md-4 offset-md-3 mt-3" >
+      <button class="btn btn-primary" type="submit" [disabled]="!loginForm.valid">Login</button>
+    </div>
+  </form>

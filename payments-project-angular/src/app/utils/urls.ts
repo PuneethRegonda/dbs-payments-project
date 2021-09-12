@@ -4,5 +4,7 @@ export class Urls {
     static customers: string = Urls.baseURL+"/customers/";
     static bank: string = Urls.baseURL + "/bank/";
     static initTransfer: string = Urls.baseURL+ "/transfer/initTransfer";
-    static login: string = Urls.baseURL + "/login";
+    static userLogin: string = Urls.baseURL + "/login";
+    static employeeLogin: string = Urls.baseURL + "/login/employee-login";
+    
 }

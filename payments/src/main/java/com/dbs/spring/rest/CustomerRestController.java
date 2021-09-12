@@ -42,7 +42,7 @@ public class CustomerRestController {
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(result);			
 		}catch (EntityNotFoundException e) {
-			System.out.println("error");
+			System.out.println("error: "+e.getMessage());
 			result.setStatus(false);
 			result.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)

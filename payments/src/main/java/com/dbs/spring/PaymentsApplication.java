@@ -28,7 +28,7 @@ public class PaymentsApplication {
     public DataSource dataSource()
     {
     	DriverManagerDataSource ds = new DriverManagerDataSource();
-    	ds.setUrl("jdbc:mariadb://localhost:3306/payments");
+    	ds.setUrl("jdbc:mariadb://localhost:3307/payments");
     	ds.setUsername("root");
     	ds.setDriverClassName("org.mariadb.jdbc.Driver");
     	ds.setPassword("root");
