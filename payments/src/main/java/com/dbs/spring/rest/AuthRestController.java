@@ -16,6 +16,7 @@ import com.dbs.spring.beans.Employee;
 import com.dbs.spring.beans.NetworkCustomer;
 import com.dbs.spring.beans.Result;
 import com.dbs.spring.service.CustomerUserService;
+import com.dbs.spring.utils.JwtUtil;
 
 @RestController
 @RequestMapping("/login")
@@ -29,12 +30,16 @@ public class AuthRestController {
 	@Autowired
 	private EmployeeUserService employeeService;
 	
+	@Autowired
+	private JwtUtil jwtUtil;
+	
 	@PostMapping
 	public ResponseEntity<Object> login(@RequestBody NetworkCustomer candidateUser){
+		
+		System.out.println("************Login*************");
 		Result result = new Result();
 		
 		try {
-
 			
 			CustomerUser user = this.customerService.findCustomerUserById(candidateUser.userid);
 			
@@ -45,14 +50,15 @@ public class AuthRestController {
 				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result);
 
 			}
-			
+			final String token = jwtUtil.generateToken(user, false);
+						
 			result.status = true;
 			result.message ="Login Successfull";
 			result.data = Map.of(
 				    "id", user.getUserid(),
 				    "name", user.getUsername(),
-				    "isEmployee",false
-
+				    "isEmployee",false,
+				    "token", token
 				);
 			return ResponseEntity.status(HttpStatus.OK).body(result);
 
@@ -81,13 +87,15 @@ public class AuthRestController {
 				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result);
 
 			}
+			final String token = jwtUtil.generateToken(new CustomerUser(employee.getEmployeeid(), employee.getEmployeename(), null, employee.getEmployeepassword()), true);
 			
 			result.status = true;
 			result.message ="Login Successfull";
 			result.data = Map.of(
 				    "id", employee.getEmployeeid(),
 				    "name", employee.getEmployeename(),
-				    "isEmployee",true
+				    "isEmployee",true,
+				    "token", token
 				);
 			return ResponseEntity.status(HttpStatus.OK).body(result);
 

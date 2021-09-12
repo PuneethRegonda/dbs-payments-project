@@ -26,14 +26,12 @@ public class EmployeeUserService {
 	
 	public Employee findCustomerUserById(Integer  userid) {
 		try {
-			
 			System.out.println("USERID: "+userid);
 			Optional<Employee> cust = this.repository.findById(userid);
 			
 			return cust.orElseThrow(()->{	
 				return new EntityNotFoundException("Invalid Credentials");
 			});
-			
 			
 		}catch(IllegalArgumentException e )
 		{

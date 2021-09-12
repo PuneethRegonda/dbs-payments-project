@@ -10,12 +10,13 @@ import { HeaderComponent } from './header/header.component';
 import { NavitemsComponent } from './navitems/navitems.component';
 import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
-import { SessionService } from './services/sessionService';
+import { AuthService } from './services/authService';
 import { MessagesServices } from './services/messagecodes.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DataService } from './services/dataservice';
 import { TransferService } from './services/transfer.service';
 import { EmployeeLoginComponent } from './employee-login/employee-login.component';
+import { Session } from './services/session';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,7 @@ import { EmployeeLoginComponent } from './employee-login/employee-login.componen
 
     ])
   ],
-  providers: [SessionService,MessagesServices,DataService,TransferService],
+  providers: [Session,AuthService,MessagesServices,DataService,TransferService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

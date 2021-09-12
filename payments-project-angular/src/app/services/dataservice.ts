@@ -1,24 +1,40 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { AuthService } from "./authService";
+import { Session } from "./session";
 
 @Injectable()
 export class DataService {
-    private transferTypes: any
-    private messages: any;
 
-    constructor(private http:HttpClient) {
-        this.transferTypes = [];
-        this.messages=[];
-    }
 
+    constructor(private http:HttpClient, private session:Session) {
+
+    }    
 
     postDataToApi(url:string,payload:any){
-        return this.http.post(url,payload);
+        const httpOptions = this.getHeaders();
+        return this.http.post(url,payload, httpOptions );
     }
    
     getDataFromApi(url:string){
-        return this.http.get(url);
+        const httpOptions = this.getHeaders()
+        return this.http.get(url,httpOptions);
     }
 
-    
+    private getHeaders(){
+        if(this.session.isLoggedIn){
+            return  {
+                headers: new HttpHeaders({
+                  'Content-Type':  'application/json',
+                  Authorization: `Bearer ${this.session.getSessionUser?.token}`
+                })
+              };
+        }else{
+            return {
+                headers: new HttpHeaders({
+                  'Content-Type':  'application/json',
+                })
+              };
+        }
+    }
 }

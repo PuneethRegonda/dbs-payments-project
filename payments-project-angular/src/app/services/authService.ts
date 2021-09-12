@@ -1,20 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Urls } from "../utils/urls";
 import { DataService } from "./dataservice";
+import { Session } from "./session";
 
 
 @Injectable()
-export class SessionService{
-    private static sessionUser : any= {
-        id:null,
-        name:null,
-        isEmployee: null
-    };
+export class AuthService{
 
-    isLoggedIn: boolean;
 
-    constructor(private dataservice: DataService){
-        this.isLoggedIn = false;
+    constructor(private dataservice: DataService,private session: Session){
     }
 
     loginUser(payload:any){
@@ -23,7 +17,8 @@ export class SessionService{
     }
 
     logout(){
-        this.isLoggedIn = false;
+        this.session.isLoggedIn = false;
+
     }
 
     employeeLogin(payload:any){
@@ -32,11 +27,8 @@ export class SessionService{
     }
 
 
-    static saveSession(data:any){
-        SessionService.sessionUser = data;
+     saveSession(data:any){
+      this.session.setSessionUser(data);
     }
 
-    get getSessionUser(){
-        return SessionService.sessionUser;
-    }
 }

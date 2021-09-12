@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessagesServices } from '../services/messagecodes.service';
-import { SessionService } from '../services/sessionService';
+import { AuthService } from '../services/authService';
 import { TransferService } from '../services/transfer.service';
+import { Session } from '../services/session';
 
 @Component({
   selector: 'app-transfer',
@@ -41,7 +42,8 @@ export class TransferComponent implements OnInit {
   constructor(
     private transferservice: TransferService,
     private messageService: MessagesServices,
-    private sessionService : SessionService
+    private sessionService : AuthService,
+    private session : Session
     ) {
     this.isSenderAccVerified = false;
     this.step = 1;
@@ -120,9 +122,9 @@ export class TransferComponent implements OnInit {
       currencyCode:"INR",
       transferAmount:this.getChildForm('transferAmountForm','amount')?.value,
       transactionFee:this.getChildForm('transferAmountForm','amount')?.value*0.25,
-      isEmployeeTransfer:this.sessionService.getSessionUser?.isEmployee,
-      employeeId: this.sessionService.getSessionUser?.isEmployee ? this.sessionService.getSessionUser.id:null,
-      userid: this.sessionService.getSessionUser?.isEmployee ? null:this.sessionService.getSessionUser.id
+      isEmployeeTransfer:this.session.getSessionUser?.isEmployee,
+      employeeId: this.session.getSessionUser?.isEmployee ? this.session.getSessionUser.id:null,
+      userid: this.session.getSessionUser?.isEmployee ? null:this.session.getSessionUser.id
      }
      console.log(transactionData);
      this.transferservice.initTransaction(transactionData).subscribe((result:any)=>{

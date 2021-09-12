@@ -5,7 +5,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Employee {
-
+	
 	@Id
 	public Integer employeeid;
 	public String employeename,employeepassword;

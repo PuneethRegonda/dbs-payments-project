@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SessionService } from '../services/sessionService';
+import { AuthService } from '../services/authService';
+import { Session } from '../services/session';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
 
 
 
-  constructor(private router: Router, private sessionService: SessionService) {
+  constructor(private router: Router, private sessionService: AuthService, private session :Session) {
     this.loginForm = new FormGroup({
       userid: new FormControl('', [
         Validators.required,
@@ -42,9 +43,9 @@ export class LoginComponent implements OnInit {
       .subscribe((result: any) => {
         console.log(result);
         if(result.status){
-          this.sessionService.isLoggedIn = true;
-          SessionService.saveSession(result.data);
-          console.log( this.sessionService.getSessionUser);
+          this.session.isLoggedIn = true;
+          this.session.setSessionUser(result?.data)
+          console.log(this.session.getSessionUser);
           this.router.navigate(['transfer']);
         }
       },err=>{
