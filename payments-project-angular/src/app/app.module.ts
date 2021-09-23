@@ -8,7 +8,6 @@ import { RouterModule } from '@angular/router';
 import { TransferComponent } from './transfer/transfer.component';
 import { HeaderComponent } from './header/header.component';
 import { NavitemsComponent } from './navitems/navitems.component';
-import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AuthService } from './services/authService';
 import { MessagesServices } from './services/messagecodes.service';
@@ -17,6 +16,12 @@ import { DataService } from './services/dataservice';
 import { TransferService } from './services/transfer.service';
 import { EmployeeLoginComponent } from './employee-login/employee-login.component';
 import { Session } from './services/session';
+import { AuthGaurd } from './Gaurds/AuthGaurd';
+import { DialogComponent } from './dialog/dialog.component';
+import { ToastrModule } from 'ngx-toastr';
+import { NotificationService } from './notification.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -25,9 +30,9 @@ import { Session } from './services/session';
     TransferComponent,
     HeaderComponent,
     NavitemsComponent,
-    TransactionHistoryComponent,
     PagenotfoundComponent,
     EmployeeLoginComponent,
+    DialogComponent,
 
   ],
   imports: [
@@ -35,20 +40,17 @@ import { Session } from './services/session';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserModule,
+    ToastrModule.forRoot(),
     RouterModule.forRoot([
       {
-        path: 'login', component: LoginComponent
+        path: 'login', component: LoginComponent,
       },
     
       {
-        path: "transfer", component: TransferComponent
+        path: "transfer", component: TransferComponent, canActivate: [AuthGaurd]
       },
       {
         path: "logout", redirectTo:""
-      },
-      {
-        path: "transactions", component: TransactionHistoryComponent
       },
       {
         path: "employee-login", component:EmployeeLoginComponent
@@ -61,9 +63,11 @@ import { Session } from './services/session';
         path: "**", redirectTo:"page-not-found"
       },
 
-    ])
+    ]),
+    BrowserAnimationsModule
+    
   ],
-  providers: [Session,AuthService,MessagesServices,DataService,TransferService],
+  providers: [Session,AuthService,MessagesServices,DataService,TransferService,NotificationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

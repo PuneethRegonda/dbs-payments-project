@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Session } from '../services/session';
 
 @Component({
   selector: 'app-navitems',
@@ -15,21 +16,17 @@ export class NavitemsComponent {
   country:any;
   cartTotal:any;
   constructor() {
-    
     this.navitems = [
-    {
-      text: "Transfer",
-      link: "transfer"
-    },
-    {
-      text: "My Transactions",
-      link: "transactions"
-    },
-    {
-      text: "Logout",
-      link: "logout"
-    },
-  ]
+      {
+        text: "Transfer",
+        link: "transfer"
+      },
+      {
+        text: "Logout",
+        link: "logout"
+      }
+    ]
+   
   };
 
 

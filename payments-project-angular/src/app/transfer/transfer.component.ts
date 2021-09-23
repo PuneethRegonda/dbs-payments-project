@@ -4,6 +4,8 @@ import { MessagesServices } from '../services/messagecodes.service';
 import { AuthService } from '../services/authService';
 import { TransferService } from '../services/transfer.service';
 import { Session } from '../services/session';
+import { NotificationService } from '../notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transfer',
@@ -43,7 +45,9 @@ export class TransferComponent implements OnInit {
     private transferservice: TransferService,
     private messageService: MessagesServices,
     private sessionService : AuthService,
-    private session : Session
+    private session : Session,
+    private notifications:NotificationService,
+    private router:Router
     ) {
     this.isSenderAccVerified = false;
     this.step = 1;
@@ -129,6 +133,14 @@ export class TransferComponent implements OnInit {
      console.log(transactionData);
      this.transferservice.initTransaction(transactionData).subscribe((result:any)=>{
         console.log(result);
+        this.notifications.showSuccess(result?.message,"Success");
+        this.router.navigateByUrl('/transfer', { skipLocationChange: true }).then(() => {
+          this.router.navigate(['/transfer']);
+      }); 
+     },(err:any)=>{
+      this.notifications.showError(err?.error?.message,"Transaction Failed");
+      console.error(err?.error);
+        // alert(err);
      });
   }
 
@@ -220,7 +232,8 @@ export class TransferComponent implements OnInit {
           this._senderAccount = response?.data;
         }
       }, err => {
-        console.log("ERROR: " + err);
+        console.log(err);
+        this.notifications.showError(err?.error?.message,"Failed");
       });
     }
 
@@ -237,6 +250,8 @@ export class TransferComponent implements OnInit {
           this._recieverBIC = response?.data;
         }
       }, err => {
+        
+        this.notifications.showError(err?.error?.message,"Failed");
         console.log("ERROR: " + err);
       });
 
@@ -252,6 +267,8 @@ export class TransferComponent implements OnInit {
         this._messageCodes = response?.data?.messages
       }
     }, err => {
+      
+      this.notifications.showError(err?.error?.message,"Failed");
       console.log("ERROR: " + err);
     });
   }

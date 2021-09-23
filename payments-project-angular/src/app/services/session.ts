@@ -1,11 +1,10 @@
 export class Session{
     private transferTypes: any
     private messages: any;
-    isLoggedIn: boolean;
+    public isLoggedIn: boolean = false;
 
     constructor(){
         this.transferTypes = [];
-        this.isLoggedIn = false;
         this.messages=[];
         this.sessionUser = {
             id:null,
@@ -19,6 +18,9 @@ export class Session{
 
     get getSessionUser(){
         return this.sessionUser;
+    }
+    isauthenticated(){
+        return this.isLoggedIn;
     }
     setSessionUser(data: any) {
         this.sessionUser = data;    

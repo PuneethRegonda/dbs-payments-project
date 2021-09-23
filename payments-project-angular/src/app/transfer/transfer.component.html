@@ -1,241 +1,268 @@
-<form [formGroup]="transferFormGroup" novalidate>
-    <div class="col-md-4 offset-md-4" *ngIf="step==1" formGroupName="senderForm">
-        <legend class="mt-4">Sender Information</legend>
-        <div class="form-group">
-            <label class="form-label mt-4">Sender Account Number</label>
-            <div class="form-group ">
-                <div class="input-group mb-3 ">
-                    <input type="number" class="form-control" placeholder="Sender Account Number"
-                        aria-label="Sender Account Number" aria-describedby="button-addon2"
-                        formControlName="senderAccNumber" (keyup)="onSenderAccChange($event)">
-                    <button class="btn btn-primary" type="button" id="button-addon2" (click)="verifyLoadSenderAcc()"
-                        [disabled]="senderAccVerified">Verify</button>
-                </div>
-                <div *ngIf=" !getChildForm('senderForm','senderAccNumber')?.valid && getChildForm('senderForm','senderAccNumber')?.dirty"
-                    class="text-danger mt-2">
-                    <div *ngIf="getChildForm('senderForm','senderAccNumber')?.errors?.required">Sender Account Number is
-                        required</div>
-                </div>
-                <small *ngIf="senderAccVerified" class="text-success">Verified</small>
+<div class="row justify-content-evenly">
+    <div class="col-lg-6 px-lg-4 mt-2 mb-4 ">
+        <div class="card col-lg-10 offset-md-1" style="border-radius: 40px;">
+            <div class="card-body  p-lg-3">
+                <form [formGroup]="transferFormGroup" novalidate>
+                    <div class="col p-2 m-2 " *ngIf="step==1" formGroupName="senderForm">
+                        <p class="fs-2 fw-bolder text-center">Sender Information</p>
+                        <div class="form-group">
+                            <label class="form-label mt-4">Sender Account Number</label>
+                            <div class="form-group ">
+                                <div class="input-group mb-3 ">
+                                    <input type="number" class="form-control" placeholder="Sender Account Number"
+                                        aria-label="Sender Account Number" aria-describedby="button-addon2"
+                                        formControlName="senderAccNumber" (keyup)="onSenderAccChange($event)">
+                                    <button class="btn btn-primary" type="button" id="button-addon2"
+                                        (click)="verifyLoadSenderAcc()" [disabled]="senderAccVerified">Verify</button>
+                                </div>
+                                <div *ngIf=" !getChildForm('senderForm','senderAccNumber')?.valid && getChildForm('senderForm','senderAccNumber')?.dirty"
+                                    class="text-danger mt-2">
+                                    <div *ngIf="getChildForm('senderForm','senderAccNumber')?.errors?.required">Sender
+                                        Account Number is
+                                        required</div>
+                                </div>
+                                <small *ngIf="senderAccVerified" class="text-success">Verified</small>
+                            </div>
+                        </div>
+
+                        <hr class="mt-5">
+                        <div class="form-group">
+                            <fieldset>
+                                <label class="form-label mt-4" for="readOnlyInput">Account Holder Name</label>
+                                <input class="form-control" id="readOnlyInput" type="text" placeholder="" readonly=""
+                                    value="{{getSenderAccount?.accountholdername}}">
+                            </fieldset>
+                        </div>
+                        <div class="form-group">
+                            <fieldset>
+                                <label class="form-label mt-4" for="readOnlyInput">Clear Balance</label>
+                                <input class="form-control" id="readOnlyInput" type="text" placeholder="" readonly=""
+                                    value="{{getSenderAccount?.clearbalance |currency:'INR'}}">
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="col p-2 m-2" *ngIf="step==2" formGroupName="recieverForm">
+                        <p class="fs-2 fw-bolder text-center">Reciepient Information</p>
+                        <div class="form-group">
+                            <label class="form-label mt-4">Recipient BIC</label>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Enter Reciepient's BIC"
+                                        aria-label="Sender Account Number" aria-describedby="button-addon2"
+                                        formControlName="recieverBIC" (keyup)="onRecieverBICChange($event)">
+
+                                    <button class="btn btn-primary" type="button" id="button-addon2"
+                                        (click)="verifyLoadRecipientBIC()"
+                                        [disabled]="recieverBICverified">Verify</button>
+                                </div>
+                                <div *ngIf=" !getChildForm('recieverForm','recieverBIC')?.valid && getChildForm('recieverForm','recieverBIC')?.dirty"
+                                    class="text-danger mt-2">
+                                    <div *ngIf="getChildForm('recieverForm','recieverBIC')?.errors?.required">Sender
+                                        Account Number is
+                                        required</div>
+                                </div>
+                                <small *ngIf="recieverBICverified" class="text-success">Verified</small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <fieldset>
+                                <label class="form-label mt-4" for="readOnlyInput">Reciepient Institution Name</label>
+                                <input class="form-control" id="readOnlyInput" type="text" placeholder="" readonly=""
+                                    value="{{getrecieverBIC?.bankname}}">
+                            </fieldset>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label mt-4" for="inputDefault">Account Holder Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Reciepient Account Holder Name"
+                                id="inputDefault" formControlName="recieverName" autocomplete="off">
+                            <div *ngIf=" !getChildForm('recieverForm','recieverName')?.valid && getChildForm('recieverForm','recieverName')?.dirty"
+                                class="text-danger mt-2">
+                                <div *ngIf="getChildForm('recieverForm','recieverName')?.errors?.required">Reciever
+                                    Account Name is required</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label mt-4" for="inputDefault">Account Number</label>
+                            <input type="number" class="form-control" placeholder="Enter Reciepient Account Number"
+                                id="inputDefault" formControlName="recieverAccountNumber" autocomplete="off">
+                        </div>
+                        <div *ngIf=" !getChildForm('recieverForm','recieverAccountNumber')?.valid && getChildForm('recieverForm','recieverAccountNumber')?.dirty"
+                            class="text-danger mt-2">
+                            <div *ngIf="getChildForm('recieverForm','recieverAccountNumber')?.errors?.required">Reciever
+                                Account Number is required</div>
+                        </div>
+                    </div>
+
+                    <div class="col p-2 m-24" *ngIf="step==3" formGroupName="transferDetailsForm">
+                        <p class="fs-2 fw-bolder text-center">Transfer Details</p>
+                        <div class="form-group">
+                            <label for="exampleSelect1" class="form-label mt-4">Transfer Types</label>
+                            <select class="form-select" id="exampleSelect1" formControlName="transferType">
+                                <option value="">Select Transfer Type</option>
+                                <option *ngFor="let c of gettransferTypes" [value]="c.code">{{c.description}}
+                                </option>
+
+                            </select>
+                        </div>
+                        <div *ngIf=" !getChildForm('transferDetailsForm','transferType')?.valid && getChildForm('transferDetailsForm','transferType')?.dirty"
+                            class="text-danger mt-2">
+                            <div *ngIf="getChildForm('transferDetailsForm','transferType')?.errors?.required">Required
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleSelect1" class="form-label mt-4">Message</label>
+                            <select class="form-select" id="exampleSelect1" formControlName="message">
+                                <option value="">Select Message</option>
+                                <option *ngFor="let c of getMessageCodes" [value]="c.messagecode">{{c.instruction}}
+                                </option>
+                            </select>
+                        </div>
+                        <div *ngIf=" !getChildForm('transferDetailsForm','message')?.valid && getChildForm('transferDetailsForm','message')?.dirty"
+                            class="text-danger mt-2">
+                            <div *ngIf="getChildForm('transferDetailsForm','message')?.errors?.required">Required</div>
+                        </div>
+
+                    </div>
+
+                    <div class="col p-2 m-2" *ngIf="step==4" formGroupName="transferAmountForm">
+                        <p class="fs-2 fw-bolder text-center">Amount Details</p>
+                        <div class="form-group">
+                            <label class="form-label mt-4">Transfer Amount</label>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" aria-label="Amount "
+                                        formControlName="amount">
+                                </div>
+                                <div *ngIf=" !getChildForm('transferAmountForm','amount')?.valid && getChildForm('transferAmountForm','amount')?.dirty"
+                                    class="text-danger mt-2">
+                                    <div *ngIf="getChildForm('transferAmountForm','amount')?.errors?.required">Required
+                                    </div>
+                                    <div *ngIf="getChildForm('transferAmountForm','amount')?.errors?.pattern">Unexpected
+                                        format </div>
+                                    <div *ngIf="isMoneyOverflow">Exceeding your clear balance</div>
+                                </div>
+                                <div class="text-danger mt-2" *ngIf="isMoneyOverflow">Exceeding your clear balance</div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Transaction Fee</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('transferAmountForm','amount')?.value*0.25}}">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Total Amount</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('transferAmountForm','amount')?.value+getChildForm('transferAmountForm','amount')?.value*0.25}}">
+                            </div>
+                        </div>
+
+                        <hr>
+                    </div>
+
+                    <div class="col p-2 m-2" *ngIf="step==5">
+                        <p class="fs-2 fw-bolder text-center">Confirm to Proceed</p>
+                        <div class="form-group row">
+                            <label for="senderAccountHolderName" class="col-md-4 col-form-label">Sender Account
+                                Number</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('senderForm','senderAccNumber')?.value}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient BIC</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('recieverForm','recieverBIC')?.value}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Institution Name</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getrecieverBIC?.bankname}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Account Number</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('recieverForm','recieverAccountNumber')?.value}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Account Holder
+                                Name</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('recieverForm','recieverName')?.value}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label"> Transfer Type</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{gettransferText}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Message</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getmessageText}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Transfer Amount</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('transferAmountForm','amount')?.value}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Transaction Fee</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('transferAmountForm','amount')?.value*0.25}}">
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-4 col-form-label">Total Amount</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail"
+                                    value="{{getChildForm('transferAmountForm','amount')?.value+getChildForm('transferAmountForm','amount')?.value*0.25}}">
+                            </div>
+
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="col-md-4 offset-md-4 d-flex justify-content-evenly my-4">
+                        <button type="button" class="btn btn-warning" (click)="previous()"
+                            *ngIf="step!=1">Previous</button>
+                        <button type="button" class="btn btn-success" (click)="submit()" [disabled]="!isValidSubmit()"
+                            *ngIf="isLastStep()">Submit</button>
+                        <button type="button" class="btn btn-primary" (click)="next()" [disabled]="!isValidNext()"
+                            *ngIf="!isLastStep()">Next</button>
+                    </div>
+                </form>
+
+                <!-- <pre>{{transferFormGroup.value|json}}</pre> -->
+
             </div>
-        </div>
-        
-        <hr class="mt-5">
-        <div class="form-group">
-            <fieldset>
-                <label class="form-label mt-4" for="readOnlyInput">Account Holder Name</label>
-                <input class="form-control" id="readOnlyInput" type="text" placeholder=""
-                    readonly=""
-                    value="{{getSenderAccount?.accountholdername}}"
-                    >
-            </fieldset>
-        </div>
-        <div class="form-group">
-            <fieldset>
-                <label class="form-label mt-4" for="readOnlyInput">Clear Balance</label>
-                <input class="form-control" id="readOnlyInput" type="text" placeholder=""
-                    readonly=""
-                    value="{{getSenderAccount?.clearbalance |currency:'INR'}}"
-                    >
-            </fieldset>
         </div>
     </div>
+</div>
 
-    <div class="col-md-4 offset-md-4" *ngIf="step==2" formGroupName="recieverForm">
-        <legend class="mt-4">Reciepient Information</legend>
-        <div class="form-group">
-            <label class="form-label mt-4">Recipient BIC</label>
-            <div class="form-group">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Enter Reciepient's BIC"
-                        aria-label="Sender Account Number" aria-describedby="button-addon2"
-                        formControlName="recieverBIC" (keyup)="onRecieverBICChange($event)">
-
-                    <button class="btn btn-primary" type="button" id="button-addon2" (click)="verifyLoadRecipientBIC()"
-                        [disabled]="recieverBICverified">Verify</button>
-                </div>
-                <div *ngIf=" !getChildForm('recieverForm','recieverBIC')?.valid && getChildForm('recieverForm','recieverBIC')?.dirty"
-                    class="text-danger mt-2">
-                    <div *ngIf="getChildForm('recieverForm','recieverBIC')?.errors?.required">Sender Account Number is
-                        required</div>
-                </div>
-                <small *ngIf="recieverBICverified" class="text-success">Verified</small>
-            </div>
-        </div>
-        <div class="form-group">
-            <fieldset>
-                <label class="form-label mt-4" for="readOnlyInput">Reciepient Institution Name</label>
-                <input class="form-control" id="readOnlyInput" type="text" placeholder=""
-                    readonly=""
-                    value= "{{getrecieverBIC?.bankname}}">
-            </fieldset>
-        </div>
-
-        <div class="form-group">
-            <label class="col-form-label mt-4" for="inputDefault">Account Holder Name</label>
-            <input type="text" class="form-control" placeholder="Enter Reciepient Account Holder Name" id="inputDefault"
-                formControlName="recieverName" autocomplete="off">
-            <div 
-            *ngIf=" !getChildForm('recieverForm','recieverName')?.valid && getChildForm('recieverForm','recieverName')?.dirty" class="text-danger mt-2">
-                <div *ngIf="getChildForm('recieverForm','recieverName')?.errors?.required">Reciever Account Name is required</div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-form-label mt-4" for="inputDefault">Account Number</label>
-            <input type="number" class="form-control" placeholder="Enter Reciepient Account Number" id="inputDefault"
-                formControlName="recieverAccountNumber" autocomplete="off">
-        </div>
-        <div 
-            *ngIf=" !getChildForm('recieverForm','recieverAccountNumber')?.valid && getChildForm('recieverForm','recieverAccountNumber')?.dirty" class="text-danger mt-2">
-                <div *ngIf="getChildForm('recieverForm','recieverAccountNumber')?.errors?.required">Reciever Account Number is required</div>
-            </div>
-    </div>
-
-    <div class="col-md-4 offset-md-4" *ngIf="step==3" formGroupName="transferDetailsForm">
-        <legend class="mt-4">Transfer Details</legend>
-        <div class="form-group">
-            <label for="exampleSelect1" class="form-label mt-4">Transfer Types</label>
-            <select class="form-select" id="exampleSelect1" formControlName="transferType">
-                <option value ="">Select Transfer Type</option>
-                <option 
-                *ngFor="let c of gettransferTypes" 
-                [value]="c.code">{{c.description}}
-                </option>
-
-            </select>
-        </div>
-        <div 
-        *ngIf=" !getChildForm('transferDetailsForm','transferType')?.valid && getChildForm('transferDetailsForm','transferType')?.dirty" class="text-danger mt-2">
-            <div *ngIf="getChildForm('transferDetailsForm','transferType')?.errors?.required">Required</div>
-        </div>
-
-        <div class="form-group">
-            <label for="exampleSelect1" class="form-label mt-4">Message</label>
-            <select class="form-select" id="exampleSelect1" formControlName="message">
-                <option value="">Select Message</option>
-                <option 
-                *ngFor="let c of getMessageCodes" 
-                [value]="c.messagecode">{{c.instruction}}
-                </option>
-            </select>
-        </div>
-        <div *ngIf=" !getChildForm('transferDetailsForm','message')?.valid && getChildForm('transferDetailsForm','message')?.dirty" class="text-danger mt-2">
-            <div *ngIf="getChildForm('transferDetailsForm','message')?.errors?.required">Required</div>
-        </div>
-
-    </div>
-
-    <div class="col-md-4 offset-md-4" *ngIf="step==4" formGroupName="transferAmountForm">
-        <legend class="mt-4">Amount Details</legend>
-        <div class="form-group">
-            <label class="form-label mt-4">Transfer Amount</label>
-            <div class="form-group">
-                <div class="input-group mb-3">
-                    <span class="input-group-text">₹</span>
-                    <input type="number" class="form-control" aria-label="Amount " formControlName="amount">
-                </div>
-                <div *ngIf=" !getChildForm('transferAmountForm','amount')?.valid && getChildForm('transferAmountForm','amount')?.dirty" class="text-danger mt-2">
-                    <div *ngIf="getChildForm('transferAmountForm','amount')?.errors?.required">Required</div>
-                    <div *ngIf="getChildForm('transferAmountForm','amount')?.errors?.pattern">Unexpected format </div>
-                    <div *ngIf="isMoneyOverflow">Exceeding your clear balance</div>
-            </div>
-                <div class="text-danger mt-2" *ngIf="isMoneyOverflow">Exceeding your clear balance</div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Transaction Fee</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value*0.25}}">
-            </div>
-        </div>
-        <hr>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Total Amount</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value+getChildForm('transferAmountForm','amount')?.value*0.25}}">
-            </div>
-        </div>
-
-        <hr>
-    </div>
-
-    <div class="col-md-6 offset-md-4" *ngIf="step==5">
-        <legend class="mt-4">Confirm to Proceed</legend>
-        <div class="form-group row">
-            <label for="senderAccountHolderName" class="col-md-4 col-form-label">Sender Account Number</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('senderForm','senderAccNumber')?.value}}">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient BIC</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('recieverForm','recieverBIC')?.value}}">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Institution Name</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getrecieverBIC?.bankname}}">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Account Number</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('recieverForm','recieverAccountNumber')?.value}}">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Reciepient Account Holder Name</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('recieverForm','recieverName')?.value}}">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label"> Transfer Type</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{gettransferText}}">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Message</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getmessageText}}">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Transfer Amount</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value}}">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Transaction Fee</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value*0.25}}">
-            </div>
-        </div>
-
-        <hr>
-        <div class="form-group row">
-            <label for="staticEmail" class="col-md-4 col-form-label">Total Amount</label>
-            <div class="col-md-4">
-                <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="{{getChildForm('transferAmountForm','amount')?.value+getChildForm('transferAmountForm','amount')?.value*0.25}}">
-            </div>
-            
-        </div>
-        <hr>
-    </div>
-    <div class="col-md-4 offset-md-4 d-flex justify-content-evenly my-4">
-        <button type="button" class="btn btn-warning" (click)="previous()" *ngIf="step!=1">Previous</button>
-        <button type="button" class="btn btn-success" (click)="submit()" [disabled]="!isValidSubmit()"
-            *ngIf="isLastStep()">Submit</button>
-        <button type="button" class="btn btn-primary" (click)="next()" [disabled]="!isValidNext()"
-            *ngIf="!isLastStep()">Next</button>
-    </div>
-</form>
-
-<pre>{{transferFormGroup.value|json}}</pre>
