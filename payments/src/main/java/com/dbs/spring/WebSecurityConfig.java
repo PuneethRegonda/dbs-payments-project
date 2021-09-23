@@ -44,76 +44,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
 
 	
-
 	private static final String[] AUTH_WHITELIST = {
-//			// -- Swagger UI v2
-//			"/v2/api-docs",
-//			"/swagger-resources",
-//			"/swagger-resources/**",
-//			"/configuration/ui",
-//			"/configuration/security",
-//			"/swagger-ui.html",
-//			"/webjars/**",
-//			// -- Swagger UI v3 (OpenAPI)
-//			"/v3/api-docs/**",
-//			"/swagger-ui/**",
-//			"/","/login","/login/employee-login"
-			// other public endpoints of your API may be appended to this array
+			// -- Swagger UI v2
+			"/v2/api-docs",
+			"/swagger-resources",
+			"/swagger-resources/**",
+			"/configuration/ui",
+			"/configuration/security",
+			"/swagger-ui.html",
+			"/webjars/**",
+			// -- Swagger UI v3 (OpenAPI)
+			"/v3/api-docs/**",
+			"/swagger-ui/**",				
 	};
+	
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		/**
-		 * disable the csrf and authorize any other request using form
-		 * based authentication
-		 */
 
-//				http.csrf().disable()
-//				.authorizeRequests().anyRequest().authenticated()
-//				.and().formLogin().and().logout();
 
-		/**
-		 * disable the csrf and permit the urls passed without authentication 
-		 * and 
-		 * authorize any other request using form
-		 * based authentication
-		 */
-		//		http.csrf().disable()
-		//		.authorizeRequests()//whitelist
-		//		.antMatchers(HttpMethod.GET,"/","/products/**","/register").permitAll()
-		//		.anyRequest().authenticated().and()
-		//		.formLogin().and().logout();
-
-		// spring mvc
-//		http.csrf().disable()
-//		.authorizeRequests()//whitelist
-//		.antMatchers(HttpMethod.GET,AUTH_WHITELIST).permitAll()
-//		.and()
-//		.authorizeRequests()
-//		.antMatchers("/invoices/**", "/sigin","/dashboard","/invoice")
-//		.hasAnyRole("USER","ADMIN")
-//		.antMatchers(HttpMethod.POST,"/products").hasAnyRole("ADMIN")
-//		.antMatchers("/user").hasAnyRole("ADMIN")
-//		.anyRequest().authenticated().and()
-//		.formLogin().and().logout();
-		
-		/**
-		 * I AM BACK.....
-		 * 
-		 * JwtController
-		 * JwtRequestfileter
-		 * JwtUtil 
-		 * 
-		 * modified the quthorization part
-		 * autowired JwtFilter
-		 * @bean authenticationmanagerbean
-		 */
+	
 		
 		// jwt
 		 http.csrf().disable()
 		.authorizeRequests()//whitelist
-//		.antMatchers(HttpMethod.GET,AUTH_WHITELIST)
-//		.anonymous()
+		.antMatchers(HttpMethod.GET,AUTH_WHITELIST)
+		.anonymous()
 		.antMatchers(HttpMethod.POST, "/login")
 		.permitAll()
 		.and()
@@ -122,10 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		.permitAll()
 		.and()
 		.authorizeRequests()
-//		.antMatchers("/invoices/**", "/sigin","/dashboard","/invoice")
-//		.hasAnyRole("USER","ADMIN")
-//		.antMatchers(HttpMethod.POST,"/products").hasAnyRole("ADMIN")
-//		.antMatchers("/user").hasAnyRole("ADMIN")
+
 		.anyRequest().authenticated()
 		.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.disable().cors();
