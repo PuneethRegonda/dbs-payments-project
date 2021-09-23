@@ -24,9 +24,7 @@ export class AppComponent {
 
     });
   }
-
-  
-
+    
   get isLogedIn() {
     return this.session.isLoggedIn;
   }
