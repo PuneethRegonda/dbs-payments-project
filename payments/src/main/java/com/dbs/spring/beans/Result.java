@@ -6,8 +6,6 @@ public class Result {
 	public String message;
 	public Object data;
 	
-	
-
 	public Result(boolean status, String message, Object data) {
 		super();
 		this.status = status;

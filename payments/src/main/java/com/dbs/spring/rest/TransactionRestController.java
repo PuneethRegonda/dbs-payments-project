@@ -1,6 +1,7 @@
 package com.dbs.spring.rest;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,7 @@ import com.dbs.spring.beans.Result;
 import com.dbs.spring.beans.Transaction;
 import com.dbs.spring.beans.TransferTransactionData;
 import com.dbs.spring.constants.Constants;
+import com.dbs.spring.filter.JwtRequestFilter;
 import com.dbs.spring.service.BankService;
 import com.dbs.spring.service.CustomerService;
 import com.dbs.spring.service.LoggerService;
@@ -68,6 +70,11 @@ public class TransactionRestController {
 	private CustomerService customerService;
 	@Autowired
 	private LoggerService loggerService;
+	@Autowired
+	private JwtRequestFilter jwtReqService;
+	
+	
+	
 	
 	private Customer getCustomer(String id) {
 		return this.customerService.findCustomerById(id);
@@ -93,9 +100,7 @@ public class TransactionRestController {
 					if(customer.getOverdraftflag() ||  (!customer.getOverdraftflag() && totalDeductionAmount <= customer.getClearbalance()) ) {
 						customer.setClearbalance(customer.getClearbalance() - totalDeductionAmount);			
 						this.customerService.updateCustomer(customer);
-						
-						Transaction transaction = new 
-								Transaction(
+						Transaction transaction = new Transaction(
 										0,customer.getCustomerid(),
 										transferData.getCurrencyCode(),
 										null,transferData.getRecieverBIC(),
@@ -106,15 +111,11 @@ public class TransactionRestController {
 										totalDeductionAmount,
 										getTransferFee(transferData.getTransferAmount()),
 										totalDeductionAmount,
-										LocalDate.now());
+										LocalDate.now()
+										);
 						
 						int transactionID = this.transactionService.insertTransaction(transaction);
-						
-						// TODO: create logger object and save it
-						
 //						System.out.println(requestService.getClientIp(request));
-								
-
 						Logger logger = new Logger(0, customer.getCustomerid(), transferData.getUserid(), transferData.getEmployeeId(),"/transfer" , "money transfer", requestService.getClientIp(request));
 						this.loggerService.insertLogger(logger);
 						
@@ -148,20 +149,16 @@ public class TransactionRestController {
 			result.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result);
 		}
-		
 		return null;
 	}
 
 	private Double getTransferFee(Double transferAmount) {
-		
 		return Constants.TRANSFER_FEE_RATE*transferAmount;
 	}
 	// TODO: Check in DB Do Bank has extra attribute call isinternalBank 
 	private boolean isValidTransferType(TransferTransactionData transferData, Bank recieverBank) {
-
 		return (transferData.transferTypeId.equals(Constants.CUSTOMER_TRANSFER_TYPE) && !recieverBank.isInternalBank())
 				|| (transferData.transferTypeId.equals(Constants.BANK_OWN_TRANSFER_TYPE)
 						&& recieverBank.isInternalBank());
 	}
-	
 }

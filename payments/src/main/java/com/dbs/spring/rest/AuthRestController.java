@@ -98,7 +98,6 @@ public class AuthRestController {
 				    "token", token
 				);
 			return ResponseEntity.status(HttpStatus.OK).body(result);
-
 			
 		}catch(Exception e) {
 			result.status = false;

@@ -1,9 +1,10 @@
 package com.dbs.spring.repository;
 
-import org.springframework.data.repository.CrudRepository;
-
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import com.dbs.spring.beans.Transaction;
 
-public interface TransactionRepository extends CrudRepository<Transaction, Integer>{
-
+public interface TransactionRepository extends JpaRepository<Transaction, Integer>{
+	
 }

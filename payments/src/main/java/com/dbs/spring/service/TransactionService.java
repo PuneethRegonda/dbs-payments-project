@@ -1,5 +1,8 @@
 package com.dbs.spring.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +33,17 @@ public class TransactionService {
 			return -1;
 		}
 	}
+	
+	public List<Transaction> getTransactions(){
+		
+		return new ArrayList();
+	}
+
+//	public List<Transaction> getTransactionsByEmployeeId() {
+//		
+//		
+//	}
+	
+	
 }
 
